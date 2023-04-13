@@ -1,6 +1,6 @@
 package com.iqjoy.changeapp.controllers;
 
-import com.iqjoy.changeapp.entities.Staff;
+import com.iqjoy.changeapp.entities.StaffEntity;
 import com.iqjoy.changeapp.repository.StaffRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,24 +31,24 @@ public class StaffController {
             String lastname = namer[1];
 
             System.out.println("Username to register received:" + request);
-            Staff staff = staffRepository.findByUsername(companyemail);
+            StaffEntity staffEntity = staffRepository.findByUsername(companyemail);
 
-            if (staff != null) {
+            if (staffEntity != null) {
                 System.out.println("This user already exists:" + companyemail);
                 return "User email already exists";
             } else {
                 byte[] passwordDigest = getMD5Digest(password);
 
-                Staff staffToSave = new Staff();
-                staffToSave.setUsername(companyemail);
-                staffToSave.setPassword(passwordDigest);
-                staffToSave.setFirstname(firstname);
-                staffToSave.setLastname(lastname);
+                StaffEntity staffEntityToSave = new StaffEntity();
+                staffEntityToSave.setUsername(companyemail);
+                staffEntityToSave.setPassword(passwordDigest);
+                staffEntityToSave.setFirstname(firstname);
+                staffEntityToSave.setLastname(lastname);
                 ZonedDateTime currentTime = ZonedDateTime.now();
                 System.out.println("current time:"+currentTime);
-                staffToSave.setLogin(currentTime);
+                staffEntityToSave.setLogin(currentTime);
 
-                staffRepository.save(staffToSave);
+                staffRepository.save(staffEntityToSave);
                 return "User created successfully";
             }
         }else{
@@ -62,8 +62,8 @@ public class StaffController {
         String password = request.get("password");
 
         System.out.println("Username to check received:"+companyemail);
-        Staff staff = staffRepository.findByUsername(companyemail);
-        if (staff == null) {
+        StaffEntity staffEntity = staffRepository.findByUsername(companyemail);
+        if (staffEntity == null) {
             // Return an error response if user not found
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
@@ -72,24 +72,24 @@ public class StaffController {
         byte[] passwordHash = getMD5Digest(password);
 
         // Compare the password hash with the hash stored in the staff object
-        if (!Arrays.equals(passwordHash, staff.getPassword())) {
+        if (!Arrays.equals(passwordHash, staffEntity.getPassword())) {
             // Return an error response if password is incorrect
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
         // Return the staff object if authentication is successful
-        return ResponseEntity.ok(staff);
+        return ResponseEntity.ok(staffEntity);
     }
 
 
     @PostMapping("/savestaff")
-    public Staff createStaff(@RequestBody Staff staff) {
-        System.out.println("staff received:"+staff);
-        return staffRepository.save(staff);
+    public StaffEntity createStaff(@RequestBody StaffEntity staffEntity) {
+        System.out.println("staff received:"+ staffEntity);
+        return staffRepository.save(staffEntity);
     }
 
     @GetMapping("/{id}")
-    public Staff getStaffById(@PathVariable Integer id) {
+    public StaffEntity getStaffById(@PathVariable Integer id) {
         return staffRepository.findById(id).orElse(null);
     }
 
