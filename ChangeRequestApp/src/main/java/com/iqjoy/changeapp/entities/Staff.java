@@ -19,7 +19,7 @@ public class Staff {
     @Column(name = "password")
     private byte[] password;
 
-    @Column(name = "login")
+    @Column(name = "login", columnDefinition = "timestamp with time zone")
     private ZonedDateTime login;
 
     @Column(name = "role")
