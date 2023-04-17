@@ -21,7 +21,7 @@ public class CompanyController {
     }
     
     
-    @PostMapping("/{id}/authorisation")
+    @PostMapping("/authorisation")
     public ResponseEntity<CompanyEntity> updateAuthorisation(@RequestBody Map<String, List<String>> request) {
         List<String> domainList = request.get("domain");
         String domain = domainList.get(0);

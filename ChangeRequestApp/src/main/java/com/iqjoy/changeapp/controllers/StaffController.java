@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Map;
-
+@CrossOrigin
 @RestController
 @RequestMapping("/staff")
 public class StaffController {
 
     @Autowired
     private StaffRepository staffRepository;
-
+    @CrossOrigin
     @PostMapping("/createuser")
     public String createUser(@RequestBody Map<String, String> request) {
         String name = request.get("name");
@@ -55,7 +55,7 @@ public class StaffController {
             return "Please enter your firstname and lastname";
         }
     }
-
+    @CrossOrigin
     @PostMapping("/authenticate")
     public ResponseEntity<Object> authenticateUser(@RequestBody Map<String, String> request) {
         String companyemail = request.get("companyemail");
@@ -81,14 +81,14 @@ public class StaffController {
         return ResponseEntity.ok(staffEntity);
     }
 
-
+    @CrossOrigin
     @PostMapping("/savestaff")
     public StaffEntity createStaff(@RequestBody StaffEntity staffEntity) {
         System.out.println("staff received:"+ staffEntity);
         return staffRepository.save(staffEntity);
     }
-
-    @GetMapping("/{id}")
+    @CrossOrigin
+    @GetMapping("/companyemail")
     public StaffEntity getStaffById(@PathVariable Integer id) {
         return staffRepository.findById(id).orElse(null);
     }
