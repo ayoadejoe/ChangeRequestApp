@@ -15,7 +15,7 @@ public class CompanyEntity {
     @Column(name = "domain", length = 200, nullable = false)
     private String domain;
 
-    @Column(name = "time_created", nullable = false)
+    @Column(name = "time_created")
     private LocalDateTime timeCreated;
 
     @Column(name = "creator", length = 50)
@@ -30,22 +30,32 @@ public class CompanyEntity {
     @Column(name = "receiptno", length = 50)
     private String receiptNo;
     @ElementCollection
-    @CollectionTable(name = "authorisation_text", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "authorisation", columnDefinition = "varchar(50)[]")
+    @Column(name = "authorisation", columnDefinition = "varchar(50)")
     private List<String> authorisation;
+
     @ElementCollection
-    @CollectionTable(name = "company_approval_texts", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "approval_status_texts", columnDefinition = "varchar(20)[]")
+    @Column(name = "approval_status_texts", columnDefinition = "varchar(20)")
     private List<String> approvalStatusTexts;
+
     @ElementCollection
-    @CollectionTable(name = "teams_text", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "teams", columnDefinition = "varchar(20)[]")
+    @Column(name = "teams", columnDefinition = "varchar(50)")
     private List<String> teams;
 
     @ElementCollection
-    @CollectionTable(name = "company_status_texts", joinColumns = @JoinColumn(name = "company_id"))
-    @Column(name = "change_status_texts", columnDefinition = "varchar(20)[]")
+    @Column(name = "change_status_texts", columnDefinition = "varchar(20)")
     private List<String> changeStatusTexts;
+
+    @ElementCollection
+    @Column(name = "infrastructure_texts", columnDefinition = "varchar(20)")
+    private List<String> infrastructureTexts;
+
+    public List<String> getInfrastructureTexts() {
+        return infrastructureTexts;
+    }
+
+    public void setInfrastructureTexts(List<String> infrastructureTexts) {
+        this.infrastructureTexts = infrastructureTexts;
+    }
 
     @Column(name = "comments", length = 2147483647)
     private String comments;
