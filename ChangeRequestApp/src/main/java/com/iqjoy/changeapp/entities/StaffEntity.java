@@ -1,6 +1,7 @@
 package com.iqjoy.changeapp.entities;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,10 @@ public class StaffEntity {
     private String username;
 
     @Column(name = "password")
-    private byte[] password;
+    private String password;
 
     @Column(name = "login", columnDefinition = "timestamp with time zone")
-    private ZonedDateTime login;
+    private LocalDateTime login;
 
     @Column(name = "role")
     private String role;
@@ -65,19 +66,19 @@ public class StaffEntity {
         this.username = username;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public ZonedDateTime getLogin() {
+    public LocalDateTime getLogin() {
         return login;
     }
 
-    public void setLogin(ZonedDateTime login) {
+    public void setLogin(LocalDateTime login) {
         this.login = login;
     }
 

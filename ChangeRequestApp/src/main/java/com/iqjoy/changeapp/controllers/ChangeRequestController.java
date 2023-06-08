@@ -1,16 +1,18 @@
 package com.iqjoy.changeapp.controllers;
+
+import com.iqjoy.changeapp.StaffCheck;
 import com.iqjoy.changeapp.entities.ChangeRequestEntity;
 import com.iqjoy.changeapp.repository.ChangeRequestRepository;
+import com.iqjoy.changeapp.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/changerequests")
 public class ChangeRequestController {
@@ -18,11 +20,59 @@ public class ChangeRequestController {
     @Autowired
     private ChangeRequestRepository changeRequestRepository;
 
+    @Autowired
+    private StaffRepository staffRepository;
+
     // Get all change requests
-    @GetMapping("/all")
-    public List<ChangeRequestEntity> getAllChangeRequests() {
-        return changeRequestRepository.findAll();
+    @PostMapping ("/selected-changes")
+    public List<ChangeRequestEntity> getSelectedChangeRequests(@RequestBody Map<String, Object> request) {
+
+        List<String> teams = (List<String>) request.get("teams");
+        String role = (String) request.get("role");
+
+        List<ChangeRequestEntity> resultSet = new ArrayList<>();
+
+        if(role.equals("Administrator")){
+            System.out.println("Result---X");
+            resultSet = changeRequestRepository.findAll();
+
+        }else{
+            System.out.println("Result---Y");
+            List<ChangeRequestEntity> rows = changeRequestRepository.findAll();
+
+            for(String team : teams){
+                // filter allChangeRequests where selectedteams contains the current team
+                resultSet.addAll(rows.stream()
+                        .filter(cr -> cr.getTeam().contains(team))
+                        .collect(Collectors.toSet()));
+            }
+        }
+        resultSet.sort(Comparator.comparing(ChangeRequestEntity::getRequestCreated).reversed());
+        return resultSet;
     }
+
+    // Get all change requests
+    @PostMapping ("/all-changes")
+    public List<ChangeRequestEntity> getAllChangeRequests(@RequestBody Map<String, Object> request) {
+        List<ChangeRequestEntity> resultSet = new ArrayList<>();
+        String username = request.get("username").toString();
+        String password = request.get("password").toString();
+
+        System.out.println(username);
+
+        if(new StaffCheck().authenticateUser(request.get("username").toString(), request.get("password").toString(), staffRepository)){
+            resultSet = changeRequestRepository.findAll();
+            //resultSet.forEach(System.out::println);
+            resultSet.sort(Comparator.comparing(ChangeRequestEntity::getRequestCreated).reversed());
+
+        }else{
+            System.out.println("false:"+resultSet);
+        }
+
+        return resultSet;
+    }
+
+
 
     // Get a single change request by ID
     @GetMapping("/{id}")
@@ -97,7 +147,6 @@ public class ChangeRequestController {
         }
     }
 
-    // Delete an existing change request by ID
     // Delete an existing change request by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteChangeRequest(@PathVariable Long id) {
